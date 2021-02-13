@@ -1,5 +1,6 @@
 {
     "name": "Ben's Space Shooter",
+    "version": "1.0.0",
     "description": "",
     "dependencies": {
         "device": "*"
