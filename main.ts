@@ -33,7 +33,7 @@ let spaceRock: Sprite = null
 let rockNumber = 0
 let missile: Sprite = null
 let mySpaceship: Sprite = null
-game.splash("Ben's Space Shooter", "Asteroids incoming!")
+game.splash("Ben's Space Shooter", "ASTEROIDS INCOMING!")
 scene.setBackgroundColor(15)
 effects.starField.startScreenEffect()
 mySpaceship = sprites.create(img`
