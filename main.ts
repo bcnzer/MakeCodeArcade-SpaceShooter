@@ -1,3 +1,9 @@
+function destroyAsteroid (missle: Sprite, asteroid: Sprite) {
+    asteroid.destroy(effects.trail, 100)
+    if (missle != asteroid) {
+        missle.destroy()
+    }
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     missile = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
@@ -20,20 +26,34 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     music.pewPew.play()
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
-    game.over(false, effects.dissolve)
+    if (invincible == 1) {
+        destroyAsteroid(sprite, sprite)
+    } else {
+        game.over(false, effects.dissolve)
+    }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    mySpaceship.startEffect(effects.halo, 5000)
+    invincible = 1
+    otherSprite.destroy()
+    pause(5000)
+    invincible = 0
+    effects.clearParticles(mySpaceship)
 })
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
-    otherSprite.destroy(effects.trail, 100)
-    sprite.destroy()
+    destroyAsteroid(sprite, otherSprite)
 })
 let spaceRock: Sprite = null
 let rockNumber = 0
+let powerUp: Sprite = null
 let missile: Sprite = null
 let mySpaceship: Sprite = null
+let invincible = 0
 game.splash("Ben's Space Shooter", "ASTEROIDS INCOMING!")
+invincible = 0
 scene.setBackgroundColor(15)
 effects.starField.startScreenEffect()
 mySpaceship = sprites.create(img`
@@ -57,6 +77,28 @@ mySpaceship = sprites.create(img`
 controller.moveSprite(mySpaceship)
 mySpaceship.setStayInScreen(true)
 mySpaceship.setPosition(80, 110)
+game.onUpdateInterval(randint(5000, 7000), function () {
+    powerUp = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . 4 4 4 4 . . . . . . 
+        . . . . 4 4 4 5 5 4 4 4 . . . . 
+        . . . 3 3 3 3 4 4 4 4 4 4 . . . 
+        . . 4 3 3 3 3 2 2 2 1 1 4 4 . . 
+        . . 3 3 3 3 3 2 2 2 1 1 5 4 . . 
+        . 4 3 3 3 3 2 2 2 2 2 5 5 4 4 . 
+        . 4 3 3 3 2 2 2 4 4 4 4 5 4 4 . 
+        . 4 4 3 3 2 2 4 4 4 4 4 4 4 4 . 
+        . 4 2 3 3 2 2 4 4 4 4 4 4 4 4 . 
+        . . 4 2 3 3 2 4 4 4 4 4 2 4 . . 
+        . . 4 2 2 3 2 2 4 4 4 2 4 4 . . 
+        . . . 4 2 2 2 2 2 2 2 2 4 . . . 
+        . . . . 4 4 2 2 2 2 4 4 . . . . 
+        . . . . . . 4 4 4 4 . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Food)
+    powerUp.setPosition(randint(10, 150), 0)
+    powerUp.setVelocity(0, 50)
+})
 game.onUpdateInterval(500, function () {
     rockNumber = randint(0, 4)
     if (rockNumber == 0) {
