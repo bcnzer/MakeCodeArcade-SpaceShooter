@@ -33,6 +33,7 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSp
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    music.powerUp.play()
     mySpaceship.startEffect(effects.halo, 5000)
     invincible = 1
     otherSprite.destroy()
